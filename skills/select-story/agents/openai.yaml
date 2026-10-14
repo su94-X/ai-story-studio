@@ -1,0 +1,8 @@
+interface:
+  display_name: "AI影视选材"
+  short_description: "联网研究中文近期话题，比较故事吸引力与AI制作条件，交接选定题材"
+  default_prompt: "使用 $select-story 搜索最近7天中文话题，推荐5个适合AI短片的选题。"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+policy:
+  allow_implicit_invocation: true

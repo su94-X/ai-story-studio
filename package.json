@@ -1,0 +1,16 @@
+{
+  "name": "ai-story-studio",
+  "version": "1.1.0",
+  "description": "中文 AI 短片与连续短剧：Agent、Skill、本地 MCP、伏笔闭环与项目恢复",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node --test",
+    "check": "node scripts/validate.mjs",
+    "setup:project": "node scripts/setup-project.mjs",
+    "mcp": "node mcp/server.mjs",
+    "build": "node scripts/build-release.mjs"
+  }
+}

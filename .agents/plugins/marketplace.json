@@ -1,0 +1,12 @@
+{
+  "name": "ai-story-studio-personal",
+  "interface": { "displayName": "AI影视创作室" },
+  "plugins": [
+    {
+      "name": "ai-story-studio",
+      "source": { "source": "local", "path": "./" },
+      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+      "category": "Productivity"
+    }
+  ]
+}

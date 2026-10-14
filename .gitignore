@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.artifacts/
+.story-studio/
+.story-studio-workspace.json
+/.codex/
+__pycache__/
+*.pyc
+.env
+.env.*
+*.log
+*.tmp

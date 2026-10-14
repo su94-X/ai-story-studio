@@ -1,0 +1,6 @@
+interface:
+  display_name: "伏笔与记忆守护"
+  short_description: "维护创作索引并检查伏笔、人物知情和版本，恢复压缩后的项目并返回意见"
+  default_prompt: "使用 $keep-story-memory 检查当前剧本的伏笔埋设与回收，维护项目索引。"
+policy:
+  allow_implicit_invocation: true

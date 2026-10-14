@@ -1,0 +1,8 @@
+interface:
+  display_name: "AI剧本编写"
+  short_description: "创作和修订短片或连续短剧文学剧本，结合人物、对白、伏笔与连续性检查"
+  default_prompt: "使用 $write-screenplay 将我的选题写成3分钟文学剧本，并检查伏笔回收。"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+policy:
+  allow_implicit_invocation: true

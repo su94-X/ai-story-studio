@@ -1,0 +1,31 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "ai-story-studio",
+  "version": "1.1.0",
+  "description": "中文热点选材、AI短片与连续短剧文学剧本，支持专职伏笔与记忆Agent、本地MCP和项目恢复。",
+  "license": "MIT",
+  "author": { "name": "su94-X" },
+  "homepage": "https://github.com/su94-X/ai-story-studio",
+  "extensions": {
+    "com.openai": {
+      "requires_local_executor": true,
+      "hooks": "./hooks/hooks.json",
+      "onboardingSkill": "./skills/setup-story-project/SKILL.md",
+      "interface": {
+        "displayName": "AI影视创作室",
+        "shortDescription": "热点选材、剧本创作与伏笔记忆Agent",
+        "longDescription": "以Agent负责创作判断、Skill提供专业方法、本地MCP维护原稿证据与版本。支持中文热点研究、短片与连续短剧文学剧本、伏笔埋设与回收、人物知情范围、检查点及上下文压缩后恢复。热点搜索使用宿主实际提供的联网工具；项目档案保存在用户本机，不使用向量知识库。初始化后配置专职story-keeper Agent，审查正文并维护索引，由写作Agent修改剧本。",
+        "developerName": "su94-X",
+        "category": "Productivity",
+        "capabilities": ["中文热点研究与选材", "短片与连续短剧写作修订", "伏笔证据与项目恢复"],
+        "composerIcon": "./assets/icon.svg",
+        "logo": "./assets/icon.svg",
+        "defaultPrompt": [
+          "使用AI影视创作室，搜索近7天中文话题，比较5个适合AI短片的选题。",
+          "把我的选题开发成3分钟文学剧本，由伏笔与记忆Agent检查埋设和回收。",
+          "恢复我的连续短剧项目，核对人物状态和待回收伏笔后继续写作。"
+        ]
+      }
+    }
+  }
+}
