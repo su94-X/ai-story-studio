@@ -73,6 +73,8 @@ npm run build
 
 可选的官方 MCP SDK 互通检查：安装开发依赖 `mcp==1.29.1` 后运行 `python -X utf8 scripts/sdk-smoke.py`。这是额外验证，不是运行插件的依赖。
 
+v1.1.0 已通过32项本机自动测试、官方 MCP SDK 互通、专职角色原生加载及连续三次真实压缩后的档案恢复。[发布验证记录](docs/release-validation-1.1.0.md) 区分独立试写、实际运行与尚未验证的范围；[联网选材示例](examples/联网选材试用-20261014.md)、[原创短片](examples/原创短片-最后一格电.txt) 和 [完整六集短剧](examples/原创六集短剧-四楼的水声.txt) 可直接阅读。
+
 详细说明：[架构](docs/architecture.md)、[工具与档案](docs/mcp-tools.md)、[验证范围](docs/testing.md)、[版本记录](CHANGELOG.md)。示例创作数据仅用于演示，不是热点或真实事件。
 
 ## 隐私与兼容
