@@ -33,10 +33,16 @@ export async function setupProject({ workspace, projectRoot, projectId, title })
   const agentsDir = path.join(configDir, 'agents');
   const configPath = path.join(configDir, 'config.toml');
   const rolePath = path.join(agentsDir, 'story-keeper.toml');
-  for (const target of [configDir, agentsDir, configPath, rolePath, path.join(workspaceRoot, '.story-studio-workspace.json')]) await refuseRedirect(target);
+  const reviewerPath = path.join(agentsDir, 'story-reviewer.toml');
+  for (const target of [configDir, agentsDir, configPath, rolePath, reviewerPath, path.join(workspaceRoot, '.story-studio-workspace.json')]) await refuseRedirect(target);
   const role = (await fs.readFile(path.join(pluginRoot, 'assets/codex/story-keeper.toml'), 'utf8')).replaceAll('{{KEEPER_SKILL_PATH}}', portable(path.join(pluginRoot, 'skills/keep-story-memory/SKILL.md')));
   const existingRole = await readOrEmpty(rolePath);
   if (existingRole && existingRole !== role) throw new Error('已有 story-keeper 角色配置不同；保留现有文件，先比较后再更新。');
+  const reviewer = (await fs.readFile(path.join(pluginRoot, 'assets/codex/story-reviewer.toml'), 'utf8'))
+    .replaceAll('{{REVIEW_SKILL_PATH}}', portable(path.join(pluginRoot, 'skills/seedance-script-review/SKILL.md')))
+    .replaceAll('{{INTEGRATION_PATH}}', portable(path.join(pluginRoot, 'skills/seedance-script-review/references/studio-integration.md')));
+  const existingReviewer = await readOrEmpty(reviewerPath);
+  if (existingReviewer && existingReviewer !== reviewer) throw new Error('已有 story-reviewer 角色配置不同；保留现有文件，先比较后再更新。');
   const existingConfig = await readOrEmpty(configPath);
   const start = existingConfig.indexOf(START), end = existingConfig.indexOf(END);
   if ((start >= 0) !== (end >= 0) || start >= 0 && end < start) throw new Error('已有托管配置标记不完整，停止以免覆盖。');
@@ -51,9 +57,10 @@ export async function setupProject({ workspace, projectRoot, projectId, title })
   // Back up only when changing an existing project config. Never edit user-level config.
   if (existingConfig && existingConfig !== config) await fs.writeFile(configPath + `.bak-${Date.now()}`, existingConfig, { flag: 'wx' });
   await fs.writeFile(rolePath, role, 'utf8');
+  await fs.writeFile(reviewerPath, reviewer, 'utf8');
   await fs.writeFile(configPath, config, 'utf8');
   await fs.writeFile(path.join(workspaceRoot, '.story-studio-workspace.json'), JSON.stringify({ formatVersion: 1, projectRoot: actualProject, projectId }, null, 2) + '\n', 'utf8');
-  return { ...opened, workspace: workspaceRoot, role: rolePath, config: configPath, workspaceTrustRequired: true, hookTrustRequired: true, next: '在该工作区开启新的 Codex 会话；确认工作区已受信任，再按宿主提示审阅并信任 Hooks，然后调用 $story-studio。' };
+  return { ...opened, workspace: workspaceRoot, role: rolePath, reviewerRole: reviewerPath, config: configPath, workspaceTrustRequired: true, hookTrustRequired: true, next: '在该工作区开启新的 Codex 会话；核对 story-keeper、story-reviewer 和 MCP 已加载，确认工作区已受信任，再按宿主提示审阅并信任 Hooks，然后调用 $story-studio。' };
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2), options = {};

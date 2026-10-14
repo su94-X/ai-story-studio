@@ -1,0 +1,4 @@
+interface:
+  display_name: "Seedance 剧本审查"
+  short_description: "审查多类型剧本的逻辑台词、分镜连续性与 Seedance 生成可行性"
+  default_prompt: "请使用 $seedance-script-review 审查这份用于 Seedance 视频制作的剧本，定位问题并给出修改建议。"

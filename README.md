@@ -1,6 +1,6 @@
 # AI Story Studio · AI影视创作室
 
-面向本机 Codex 的中文 AI 短片与连续短剧创作插件。通过 **主创 Agent + 伏笔与记忆 Agent + Skill + 本地 MCP** 完成选材、开发、文学剧本、修订和项目恢复。MIT 开源。
+面向本机 Codex 的中文 AI 短片与连续短剧创作插件。通过 **主创 Agent + 独立审稿 Agent + 伏笔与记忆 Agent + Skill + 本地 MCP** 完成选材、开发、文学剧本、修订和项目恢复。MIT 开源。
 
 Agent 决定如何理解故事、设计伏笔和保留创作状态。MCP 只提供可靠的原稿、证据、版本和档案工具。项目保存在可读文件中，无向量数据库、传统 RAG、外部记忆服务或单独的模型 API Key。运行时零 npm 依赖，需要 **Node.js 20+**。
 
@@ -28,9 +28,9 @@ node --version
 node scripts/setup-project.mjs --workspace "D:\我的创作" --project-root "D:\我的创作\项目\雨夜钥匙" --project-id "rain-key" --title "雨夜钥匙"
 ```
 
-这会建立项目级 `.codex/agents/story-keeper.toml`、MCP 与 Hooks 配置、活动项目入口及空档案。只修改选定工作区；已有配置先备份，其他设置保留。再次运行同样命令不会重复添加配置。已有不同的同名角色或 MCP 配置会停止并保留原文件。
+这会建立项目级 `.codex/agents/story-keeper.toml` 和 `story-reviewer.toml`、MCP 与 Hooks 配置、活动项目入口及空档案。只修改选定工作区；已有配置先备份，其他设置保留。再次运行同样命令不会重复添加配置。已有不同的同名角色或 MCP 配置会停止并保留原文件。
 
-在该工作区开启新 Codex 会话，先确认工作区受信任，再核对 `ai_story_studio` 工具和 `story-keeper`，并按宿主提示审阅和信任 Hooks。未信任工作区时，项目级配置可能不会加载。初始化写入文件不等于宿主已加载或已信任。
+在该工作区开启新 Codex 会话，先确认工作区受信任，再核对 `ai_story_studio` 工具、`story-keeper` 和 `story-reviewer`，并按宿主提示审阅和信任 Hooks。未信任工作区时，项目级配置可能不会加载。初始化写入文件不等于宿主已加载或已信任。
 
 首次未安装插件时，可以直接让 Codex 读取解压目录中的 `skills/story-studio/SKILL.md`。安装为插件可使用本地/仓库 marketplace；CLI 0.157.1 使用：
 
@@ -41,13 +41,14 @@ codex plugin add ai-story-studio@ai-story-studio-personal
 
 不同客户端的命令与本地插件入口可能变化，以 `codex plugin --help` 和插件目录界面为准。安装后仍需为工作区初始化专职角色。若插件和项目配置同时提供同名 MCP，只使用核对后连接成功的一个。
 
-## 五个 Skill
+## 六个 Skill
 
 | Skill | 入口 |
 |---|---|
 | `$story-studio` | 整体项目、选材后写作、持续创作与恢复 |
 | `$select-story` | 热点、原创或已有素材选材 |
 | `$write-screenplay` | 新写、改编、续写与修订文学剧本 |
+| `$seedance-script-review` | 写后自动审稿、定位问题和修改稿复审；按稿件阶段检查 |
 | `$keep-story-memory` | 伏笔、连续性、索引和恢复检查 |
 | `$setup-story-project` | 初始化本地项目能力 |
 
@@ -85,4 +86,14 @@ v1.1.0 已通过32项本机自动测试、官方 MCP SDK 互通、专职角色�
 
 Codex 支持范围参考 [官方 Agent 文档](https://learn.chatgpt.com/docs/agent-configuration/subagents)、[Hooks 文档](https://learn.chatgpt.com/docs/hooks) 和 [插件打包规范](https://developers.openai.com/plugins/build/plugins)。带 Hooks 的本地插件与公共插件目录的提交规则不同；本仓库通过 GitHub 开源分发。
 
-当前 v1.1.1 将中文文学剧本格式设为默认，动作使用 △，人物名与对白同段；结构与 Word 排版基线见 [剧本格式规范](skills/write-screenplay/references/screenplay-format.md)。用户明确指定的新格式优先。
+v1.1.1 将中文文学剧本格式设为默认，动作使用 △，人物名与对白同段；结构与 Word 排版基线见 [剧本格式规范](skills/write-screenplay/references/screenplay-format.md)。用户明确指定的新格式优先。
+
+## 写后自动审查
+
+v1.2.0 集成 seedance-script-review v1.0.0 的完整资源，新增 story-reviewer 角色。主创每次完成约定范围后保存正文，委派独立审稿，依据问题修订并复审；守护 Agent 串行刷新伏笔证据与审查索引。审稿 Agent 和守护 Agent 均不改正文。
+
+文学稿按文学阶段审查，不要求尚未提供的分镜、音色或上传字段。该流程由主创 Agent 执行 Skill，不是后台文件监听器。已有工作区再次运行原初始化命令即可补充审稿角色；不同的自定义同名角色会保留并停止供比较。新角色是否加载以新会话中的实际能力为准。
+
+结构助手可选使用 Python 3 标准库；核心 MCP 仍是 Node.js 20+、零 npm 依赖。详细约定见 [审稿衔接](skills/seedance-script-review/references/studio-integration.md)。
+
+[本版本集成验证](docs/release-validation-1.2.0.md) 区分资源/配置校验、真实审稿试验及未验证的宿主加载范围。

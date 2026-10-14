@@ -16,11 +16,32 @@ test('setup preserves unrelated config and is idempotent', async t => {
   await fs.writeFile(path.join(f.workspace, '.codex/config.toml'), 'model_verbosity = "low"\n');
   await setupProject(options);
   const configPath = path.join(f.workspace, '.codex/config.toml'), first = await fs.readFile(configPath, 'utf8');
+  const reviewerPath = path.join(f.workspace, '.codex/agents/story-reviewer.toml');
+  const firstReviewer = await fs.readFile(reviewerPath, 'utf8');
   await setupProject(options);
+  assert.equal(await fs.readFile(configPath, 'utf8'), first);
+  assert.equal(await fs.readFile(reviewerPath, 'utf8'), firstReviewer);
+  assert.ok(firstReviewer.includes(path.join(ROOT, 'skills/seedance-script-review/SKILL.md').split(path.sep).join('/')));
+  assert.ok(!firstReviewer.includes('{{'));
+  await fs.unlink(reviewerPath); // Upgrade an existing workspace that only has the keeper.
+  await setupProject(options);
+  assert.equal(await fs.readFile(reviewerPath, 'utf8'), firstReviewer);
   assert.equal(await fs.readFile(configPath, 'utf8'), first);
   assert.ok(first.startsWith('model_verbosity = "low"'));
   assert.equal((first.match(/\[mcp_servers.ai_story_studio\]/g) || []).length, 1);
   assert.ok((await fs.readFile(path.join(f.workspace, '.codex/agents/story-keeper.toml'), 'utf8')).includes('shell_tool = false'));
+});
+test('setup preserves a custom reviewer before changing config or keeper', async t => {
+  const f = await fixture(t);
+  await fs.mkdir(path.join(f.workspace, '.codex/agents'), { recursive: true });
+  const reviewer = path.join(f.workspace, '.codex/agents/story-reviewer.toml');
+  const config = path.join(f.workspace, '.codex/config.toml');
+  await fs.writeFile(reviewer, 'custom = true\n');
+  await fs.writeFile(config, 'model_verbosity = "low"\n');
+  await assert.rejects(setupProject({ workspace: f.workspace, projectRoot: f.projectRoot, projectId: 'demo' }), /已有 story-reviewer/);
+  assert.equal(await fs.readFile(reviewer, 'utf8'), 'custom = true\n');
+  assert.equal(await fs.readFile(config, 'utf8'), 'model_verbosity = "low"\n');
+  await assert.rejects(fs.access(path.join(f.workspace, '.codex/agents/story-keeper.toml')));
 });
 test('setup preserves an existing custom keeper', async t => {
   const f = await fixture(t);
@@ -78,7 +99,7 @@ test('keeper guidance can be read over MCP without shell or arbitrary file acces
 });
 test('all portable and compatibility resources validate', async () => {
   const result = await validate(ROOT);
-  assert.equal(result.skills.length, 5);
+  assert.equal(result.skills.length, 6);
   assert.equal(result.runtimeDependencies, 0);
 });
 test('ZIP entries use UTF-8 and deterministic compressed headers', () => {
