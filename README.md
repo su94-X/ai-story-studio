@@ -84,3 +84,5 @@ v1.1.0 已通过32项本机自动测试、官方 MCP SDK 互通、专职角色�
 原有 v1 项目开发卡可由 Agent 读取并转换，保留原件。新的运行时档案格式为2，和可读项目卡的版本分别记录。现有 `select-story` / `write-screenplay` 入口保留。
 
 Codex 支持范围参考 [官方 Agent 文档](https://learn.chatgpt.com/docs/agent-configuration/subagents)、[Hooks 文档](https://learn.chatgpt.com/docs/hooks) 和 [插件打包规范](https://developers.openai.com/plugins/build/plugins)。带 Hooks 的本地插件与公共插件目录的提交规则不同；本仓库通过 GitHub 开源分发。
+
+当前 v1.1.1 将中文文学剧本格式设为默认，动作使用 △，人物名与对白同段；结构与 Word 排版基线见 [剧本格式规范](skills/write-screenplay/references/screenplay-format.md)。用户明确指定的新格式优先。

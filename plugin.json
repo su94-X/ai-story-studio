@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "ai-story-studio",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "中文热点选材、AI短片与连续短剧文学剧本，支持专职伏笔与记忆Agent、本地MCP和项目恢复。",
   "license": "MIT",
   "author": { "name": "su94-X" },
